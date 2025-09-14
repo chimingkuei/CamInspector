@@ -25,7 +25,7 @@
                 <WrapPanel Margin="12,-20,12,10">
                     <RadioButton x:Name="Home_Page" GroupName="Menu" Style="{StaticResource ButtonType}" Content="主 　 　 頁"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-home-50.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
                     <RadioButton x:Name="Parameter_Setting" GroupName="Menu" Style="{StaticResource ButtonType}" Content="參 數 設 定"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-edit-property-50.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
-                    <RadioButton x:Name="Device_Setting" GroupName="Menu" Style="{StaticResource ButtonType}" Content="縮 小 視 窗"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-setting-48.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
+                    <RadioButton x:Name="Detection_Display" GroupName="Menu" Style="{StaticResource ButtonType}" Content="檢 測 顯 示"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-radar-40.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
                     <RadioButton x:Name="Product_History" GroupName="Menu" Style="{StaticResource ButtonType}" Content="產 品 履 歷"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-order-history-50.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
                     <RadioButton x:Name="Window_Closing" GroupName="Menu" Style="{StaticResource ButtonType}" Content="關 閉 程 式"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-power-off-button-50.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
                 </WrapPanel>
@@ -114,6 +114,7 @@
             </TabItem>
             <TabItem>
                 <Grid>
+                    <DataGrid x:Name="Parameter"/>
 
                 </Grid>
             </TabItem>

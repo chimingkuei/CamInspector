@@ -286,7 +286,6 @@
     <Resource Include="Icon\Menu Block\icons8-home-50.png" />
     <Resource Include="Icon\Menu Block\icons8-order-history-50.png" />
     <Resource Include="Icon\Menu Block\icons8-power-off-button-50.png" />
-    <Resource Include="Icon\Menu Block\icons8-setting-48.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon\Account\eye.png" />
@@ -296,6 +295,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon\Account\AccountGroup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\Menu Block\icons8-radar-40.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

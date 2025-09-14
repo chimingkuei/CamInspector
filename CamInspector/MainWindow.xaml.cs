@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -25,7 +27,7 @@ namespace CamInspector
 {
     enum Page
     {
-        Homepage, ParameterSettings, DeviceSettings, ProductHistory
+        Homepage, ParameterSettings, DetectionDisplay, ProductHistory
     }
 
     #region Config Class
@@ -241,9 +243,9 @@ namespace CamInspector
                         SelectPage(Page.ParameterSettings, "參數設定");
                         break;
                     }
-                case nameof(Device_Setting):
+                case nameof(Detection_Display):
                     {
-                        SelectPage(Page.DeviceSettings, "設備設定");
+                        SelectPage(Page.DetectionDisplay, "檢測顯示");
                         break;
                     }
                 case nameof(Product_History):
@@ -253,7 +255,7 @@ namespace CamInspector
                     }
                 case nameof(Window_Closing):
                     {
-                        if (MessageBox.Show("確認要關閉程式嗎？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                        if (System.Windows.MessageBox.Show("確認要關閉程式嗎？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                             this.Close();
                         Window_Closing.IsChecked = false;
                         break;
@@ -287,7 +289,41 @@ namespace CamInspector
             {
                 case nameof(Demo):
                     {
-                        
+                        DataTable dt = new DataTable();
+                        dt.Columns.Add("ID", typeof(int));
+                        dt.Columns.Add("Name", typeof(string));
+                        dt.Columns.Add("Age", typeof(int));
+                        dt.Columns.Add("IsSelected", typeof(bool)); // 勾勾欄位
+                        dt.Rows.Add(1, "Alice", 25, true);
+                        dt.Rows.Add(2, "Bob", 30, false);
+                        // DataGrid 不自動生成欄位
+                        Parameter.AutoGenerateColumns = false;
+                        // 動態生成欄位
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            if (col.DataType == typeof(bool))
+                            {
+                                // 勾勾欄位
+                                DataGridCheckBoxColumn checkColumn = new DataGridCheckBoxColumn
+                                {
+                                    Header = col.ColumnName,
+                                    Binding = new System.Windows.Data.Binding(col.ColumnName)
+                                };
+                                Parameter.Columns.Add(checkColumn);
+                            }
+                            else
+                            {
+                                // 文字欄位
+                                DataGridTextColumn textColumn = new DataGridTextColumn
+                                {
+                                    Header = col.ColumnName,
+                                    Binding = new System.Windows.Data.Binding(col.ColumnName)
+                                };
+                                Parameter.Columns.Add(textColumn);
+                            }
+                        }
+                        // 設定 DataGrid 資料來源
+                        Parameter.ItemsSource = dt.DefaultView;
                         break;
                     }
             }

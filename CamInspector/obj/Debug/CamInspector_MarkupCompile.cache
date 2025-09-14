@@ -4,7 +4,7 @@
 winexe
 C#
 .cs
-D:\Chimingkuei\repos\Project\CamInspector\CamInspector\obj\x64\Debug\
+D:\Chimingkuei\repos\Project\CamInspector\CamInspector\obj\Debug\
 CamInspector
 none
 false
@@ -12,9 +12,9 @@ DEBUG;TRACE
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\App.xaml
 19390786206
 490096227
-18931676118
+181128010752
 332083746438
 ControlItem\IndicatorLight.xaml;Icon\Account\Account.xaml;Icon\Account\AccountGroup.xaml;Icon\Log\LogDebug.xaml;Icon\Log\LogError.xaml;Icon\Log\LogInformation.xaml;Icon\Log\LogWarning.xaml;MainWindow.xaml;Subpage\LogIn.xaml;Subpage\Register.xaml;UI\ButtonStyles.xaml;UI\CheckBoxStyles.xaml;UI\ComboBoxStyles.xaml;UI\GroupBoxStyles.xaml;UI\RadioButtonStyles.xaml;UI\SliderStyles.xaml;UI\TabControlStyles.xaml;UI\TextBoxStyles.xaml;UI\ToggleButtonStyles.xaml;
 
-False
+True
 
