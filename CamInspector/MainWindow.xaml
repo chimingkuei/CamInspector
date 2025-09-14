@@ -1,0 +1,132 @@
+﻿<Window x:Class="CamInspector.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:dc="clr-namespace:CamInspector.ControlItem"
+        xmlns:dia="clr-namespace:CamInspector.Icon.Account"
+        xmlns:local="clr-namespace:CamInspector"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        Title="DeepWise" Height="1080" Width="1920" Background="#024275" Loaded="Window_Loaded">
+    <Grid>
+        <Grid Margin="0,0,1586,0" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="6*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <Image Grid.Row ="0" x:Name="Logo" HorizontalAlignment="Left" Height="70" Margin="32,50,0,0" VerticalAlignment="Top" Width="267" Source="/Icon/Company Logo.png"/>
+            <GroupBox Grid.Row ="1" Style="{StaticResource BaseGroupBox}" Header="Menu" FontSize="36" FontWeight="Bold">
+                <WrapPanel Margin="12,-20,12,10">
+                    <RadioButton x:Name="Home_Page" GroupName="Menu" Style="{StaticResource ButtonType}" Content="主 　 　 頁"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-home-50.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
+                    <RadioButton x:Name="Parameter_Setting" GroupName="Menu" Style="{StaticResource ButtonType}" Content="參 數 設 定"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-edit-property-50.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
+                    <RadioButton x:Name="Device_Setting" GroupName="Menu" Style="{StaticResource ButtonType}" Content="縮 小 視 窗"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-setting-48.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
+                    <RadioButton x:Name="Product_History" GroupName="Menu" Style="{StaticResource ButtonType}" Content="產 品 履 歷"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-order-history-50.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
+                    <RadioButton x:Name="Window_Closing" GroupName="Menu" Style="{StaticResource ButtonType}" Content="關 閉 程 式"  Width="286" Height="80" Tag="../Icon/Menu Block/icons8-power-off-button-50.png" Margin="0,10,0,0" Checked="Menu_Rbn"/>
+                </WrapPanel>
+            </GroupBox>
+            <GroupBox Grid.Row ="2" Style="{StaticResource BaseGroupBox}" Header="Devices" FontSize="36" FontWeight="Bold">
+                <WrapPanel Orientation="Vertical" Height="304" Margin="0,-50,0,0">
+                    <dc:IndicatorLight LightColor="#00FF00" DeviceName="MotionController" Width="303" Height="56" Margin="4.5,4,0,0"/>
+                    <dc:IndicatorLight LightColor="#00FF00" DeviceName="CameraTop" Width="303" Height="56" Margin="4.5,4,0,0"/>
+                    <dc:IndicatorLight LightColor="#00FF00" DeviceName="CameraLeft" Width="303" Height="56" Margin="4.5,4,0,0"/>
+                    <dc:IndicatorLight LightColor="#00FF00" DeviceName="Dimmer" Width="303" Height="56" Margin="4.5,4,0,0"/>
+                    <dc:IndicatorLight LightColor="#00FF00" DeviceName="Robot" Width="303" Height="56" Margin="4.5,4,0,0"/>
+                </WrapPanel>
+            </GroupBox>
+        </Grid>
+        <TabControl x:Name="Log" HorizontalAlignment="Left" Height="148" Margin="335,897,0,0" VerticalAlignment="Top" Width="1587" Background="#FFE6F0FF">
+            <TabControl.Resources>
+                <Style TargetType="RichTextBox">
+                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="IsReadOnly" Value="True" />
+                    <Setter Property="DockPanel.Dock" Value="Bottom" />
+                </Style>
+                <Style TargetType="Paragraph">
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="FontSize" Value="16" />
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="一般" Style="{StaticResource LogTabcontrol}" Tag="Information">
+                <RichTextBox x:Name="richTextBoxGeneral" Background="#FF43B5BF"/>
+            </TabItem>
+            <TabItem Header="警告" Style="{StaticResource LogTabcontrol}" Tag="Warning">
+                <RichTextBox x:Name="richTextBoxWarning" Background="#FF43AABF"/>
+            </TabItem>
+            <TabItem Header="錯誤" Style="{StaticResource LogTabcontrol}" Tag="Error">
+                <RichTextBox x:Name="richTextBoxError" Background="#FF43A0BF"/>
+            </TabItem>
+            <TabItem Header="除錯" Style="{StaticResource LogTabcontrol}" Tag="Debug">
+                <RichTextBox x:Name="richTextBoxDebug" Background="#FF4396BF"/>
+            </TabItem>
+        </TabControl>
+        <StatusBar Name="statusBar" Margin="334,1045,0,1" FontSize="20" Background="#E5EEF9" BorderBrush="#646464" BorderThickness="1">
+            <StatusBarItem>
+                <TextBlock x:Name="Status" Width="1010"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Center">
+                <GridSplitter Height="27" IsEnabled="False" BorderBrush="#646464" BorderThickness="1" Width="1"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock x:Name="Version_Number" Width="170" Height="42" FontSize="22"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Center">
+                <GridSplitter Height="27" IsEnabled="False" BorderBrush="#646464" BorderThickness="1" Width="1"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ToggleButton x:Name="LogIn" Width="110" Height="42" Background="#E5EEF9" BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="LogIn_Switch" Unchecked="LogIn_Switch">
+                    <StackPanel Orientation="Horizontal">
+                        <dia:Account Width="20" Margin="2,0"/>
+                        <TextBlock x:Name="Account_LogIn" Text="Log In" Margin="0,0,2,0" FontSize="22"/>
+                    </StackPanel>
+                </ToggleButton>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Center">
+                <GridSplitter Height="27" IsEnabled="False" BorderBrush="#646464" BorderThickness="1" Width="1"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock x:Name="System_Time" Width="262" Height="42" FontSize="22"/>
+            </StatusBarItem>
+        </StatusBar>
+        <TabControl x:Name="Main" HorizontalAlignment="Left" Margin="343,3,0,0" VerticalAlignment="Top" Height="887" Width="1562" Background="#024275" BorderThickness="0">
+            <!--<TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.ItemContainerStyle>-->
+            <TabItem>
+                <Grid>
+                    <Button x:Name="Demo" Style="{StaticResource BaseButton}" Margin="1297,265,129,555" Content="Demo" FontSize="18" Background="#FF3E6FB3" Click="Main_Btn_Click"/>
+                    <!--圓形按鈕用Style="{StaticResource CircleButton}"-->
+                    <TextBox x:Name="Parameter1" Style="{StaticResource BaseTextBox}" Tag="請輸入內容..." Margin="1287,398,117,427"/>
+                    <TextBox x:Name="Parameter2" Style="{StaticResource BaseTextBox}" Tag="請輸入內容..." Margin="1287,483,117,342"/>
+                    <WindowsFormsHost  Margin="16,56,349,68">
+                        <wf:PictureBox x:Name="Display_Windows" BorderStyle="FixedSingle" BackColor="Black"/>
+                    </WindowsFormsHost>
+
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <Grid>
+
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <Grid>
+
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <Grid>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
