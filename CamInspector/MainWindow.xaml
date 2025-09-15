@@ -109,18 +109,17 @@
                     <WindowsFormsHost  Margin="16,56,349,68">
                         <wf:PictureBox x:Name="Display_Windows" BorderStyle="FixedSingle" BackColor="Black"/>
                     </WindowsFormsHost>
-                   
+                    <Button x:Name="Demo1" Style="{StaticResource BaseButton}" Margin="1294,596,132,224" Content="Demo1" FontSize="18" Background="#FF3E6FB3" Click="Main_Btn_Click"/>
                 </Grid>
             </TabItem>
             <TabItem>
                 <Grid>
                     <DataGrid x:Name="Parameter"/>
-
                 </Grid>
             </TabItem>
             <TabItem>
                 <Grid>
-
+                    <WrapPanel x:Name="LightPanel" Orientation="Horizontal" Margin="10" Background="LightGray"/>
                 </Grid>
             </TabItem>
             <TabItem>

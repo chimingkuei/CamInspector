@@ -136,6 +136,7 @@
     <Compile Include="Icon\Account\AccountGroup.xaml.cs">
       <DependentUpon>AccountGroup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LightHandler.cs" />
     <Compile Include="Subpage\AuthManager.cs" />
     <Compile Include="Subpage\LogIn.xaml.cs">
       <DependentUpon>LogIn.xaml</DependentUpon>
