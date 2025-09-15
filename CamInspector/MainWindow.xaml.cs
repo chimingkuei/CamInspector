@@ -226,6 +226,7 @@ namespace CamInspector
         }
         BaseConfig<RootObject> Config = new BaseConfig<RootObject>();
         BaseLogRecord Logger = new BaseLogRecord();
+        CamHandler cam = new CamHandler();
         #endregion
 
         #region Menu Block
@@ -289,41 +290,7 @@ namespace CamInspector
             {
                 case nameof(Demo):
                     {
-                        DataTable dt = new DataTable();
-                        dt.Columns.Add("ID", typeof(int));
-                        dt.Columns.Add("Name", typeof(string));
-                        dt.Columns.Add("Age", typeof(int));
-                        dt.Columns.Add("IsSelected", typeof(bool)); // 勾勾欄位
-                        dt.Rows.Add(1, "Alice", 25, true);
-                        dt.Rows.Add(2, "Bob", 30, false);
-                        // DataGrid 不自動生成欄位
-                        Parameter.AutoGenerateColumns = false;
-                        // 動態生成欄位
-                        foreach (DataColumn col in dt.Columns)
-                        {
-                            if (col.DataType == typeof(bool))
-                            {
-                                // 勾勾欄位
-                                DataGridCheckBoxColumn checkColumn = new DataGridCheckBoxColumn
-                                {
-                                    Header = col.ColumnName,
-                                    Binding = new System.Windows.Data.Binding(col.ColumnName)
-                                };
-                                Parameter.Columns.Add(checkColumn);
-                            }
-                            else
-                            {
-                                // 文字欄位
-                                DataGridTextColumn textColumn = new DataGridTextColumn
-                                {
-                                    Header = col.ColumnName,
-                                    Binding = new System.Windows.Data.Binding(col.ColumnName)
-                                };
-                                Parameter.Columns.Add(textColumn);
-                            }
-                        }
-                        // 設定 DataGrid 資料來源
-                        Parameter.ItemsSource = dt.DefaultView;
+                        cam.IPCamInit(Parameter);
                         break;
                     }
             }

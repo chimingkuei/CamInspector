@@ -129,6 +129,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CamHandler.cs" />
     <Compile Include="Icon\Account\Account.xaml.cs">
       <DependentUpon>Account.xaml</DependentUpon>
     </Compile>

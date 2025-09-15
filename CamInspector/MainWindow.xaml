@@ -109,7 +109,7 @@
                     <WindowsFormsHost  Margin="16,56,349,68">
                         <wf:PictureBox x:Name="Display_Windows" BorderStyle="FixedSingle" BackColor="Black"/>
                     </WindowsFormsHost>
-
+                   
                 </Grid>
             </TabItem>
             <TabItem>
