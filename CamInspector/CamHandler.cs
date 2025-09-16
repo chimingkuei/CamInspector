@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -134,7 +135,16 @@ namespace CamInspector
             //});
         }
 
-
+        public void ReadDataGrid()
+        {
+            foreach (var item in dataGrid.Items)
+            {
+                if (item is IPCam cam)
+                {
+                    Console.WriteLine($"名稱: {cam.Name}, IP: {cam.IP}");
+                }
+            }
+        }
 
 
 

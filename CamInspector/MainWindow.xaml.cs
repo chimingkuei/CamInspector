@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -227,7 +228,7 @@ namespace CamInspector
                 currentRect = new Rectangle
                 {
                     Stroke = Brushes.Red,
-                    StrokeThickness = 2
+                    StrokeThickness = 4
                 };
 
                 // 矩形也要能監聽點擊事件
@@ -401,21 +402,22 @@ namespace CamInspector
             {
                 case nameof(Demo):
                     {
-                        //cam.dataGrid = Parameter;
-                        //cam.IPCamInit();
-                        light.TwoLights(LightPanel, "CCTV1", LightColor.Off);
-                        light.TwoLights(LightPanel, "CCTV2", LightColor.Off);
+                        cam.dataGrid = Parameter;
+                        cam.IPCamInit();
+                        //light.TwoLights(LightPanel, "CCTV1", LightColor.Off);
+                        //light.TwoLights(LightPanel, "CCTV2", LightColor.Off);
                         break;
                     }
                 case nameof(Demo1):
                     {
                         // 控制第一組燈變成綠燈亮
-                        var frame1 = LightPanel.Children[0] as Border;
-                        light.SetLight(frame1, LightColor.Green);
+                        //var frame1 = LightPanel.Children[0] as Border;
+                        //light.SetLight(frame1, LightColor.Green);
 
                         // 控制第二組燈熄滅
-                        var frame2 = LightPanel.Children[1] as Border;
-                        light.SetLight(frame2, LightColor.Red);
+                        //var frame2 = LightPanel.Children[1] as Border;
+                        //light.SetLight(frame2, LightColor.Red);
+                        //cam.ReadDataGrid();
                         break;
                     }
             }
