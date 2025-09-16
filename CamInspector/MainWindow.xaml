@@ -106,9 +106,9 @@
                     <!--圓形按鈕用Style="{StaticResource CircleButton}"-->
                     <TextBox x:Name="Parameter1" Style="{StaticResource BaseTextBox}" Tag="請輸入內容..." Margin="1287,398,117,427"/>
                     <TextBox x:Name="Parameter2" Style="{StaticResource BaseTextBox}" Tag="請輸入內容..." Margin="1287,483,117,342"/>
-                    <WindowsFormsHost  Margin="16,56,349,68">
-                        <wf:PictureBox x:Name="Display_Windows" BorderStyle="FixedSingle" BackColor="Black"/>
-                    </WindowsFormsHost>
+                    <Canvas x:Name="Box_Canvas" Margin="16,56,349,68" Background="Black" MouseDown="Box_MouseDown" MouseUp="Box_MouseUp" MouseMove="Box_MouseMove">
+                        <Image Name="Display_Screen" Height="749" Width="1190"/>
+                    </Canvas>
                     <Button x:Name="Demo1" Style="{StaticResource BaseButton}" Margin="1294,596,132,224" Content="Demo1" FontSize="18" Background="#FF3E6FB3" Click="Main_Btn_Click"/>
                 </Grid>
             </TabItem>

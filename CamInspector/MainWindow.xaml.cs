@@ -215,6 +215,109 @@ namespace CamInspector
             path.ShowDialog();
             textbox.Text = path.SelectedPath;
         }
+
+        #region Box Event
+        private void Box_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers == ModifierKeys.None)
+            {
+                startPoint = e.GetPosition(Box_Canvas);
+
+                // 建立新的矩形
+                currentRect = new Rectangle
+                {
+                    Stroke = Brushes.Red,
+                    StrokeThickness = 2
+                };
+
+                // 矩形也要能監聽點擊事件
+                currentRect.MouseDown += TargetBox_MouseDown;
+
+                Canvas.SetLeft(currentRect, startPoint.X);
+                Canvas.SetTop(currentRect, startPoint.Y);
+                Box_Canvas.Children.Add(currentRect);
+
+                isDrawing = true;
+            }
+        }
+
+        private void Box_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (isDrawing && e.LeftButton == MouseButtonState.Pressed && currentRect != null)
+            {
+                Point pos = e.GetPosition(Box_Canvas);
+
+                double x = Math.Min(pos.X, startPoint.X);
+                double y = Math.Min(pos.Y, startPoint.Y);
+                double w = Math.Abs(pos.X - startPoint.X);
+                double h = Math.Abs(pos.Y - startPoint.Y);
+
+                Canvas.SetLeft(currentRect, x);
+                Canvas.SetTop(currentRect, y);
+                currentRect.Width = w;
+                currentRect.Height = h;
+            }
+            else if (isDragging && selectedRect != null && e.LeftButton == MouseButtonState.Pressed)
+            {
+                // 拖曳矩形
+                Point pos = e.GetPosition(Box_Canvas);
+                double dx = pos.X - dragStartPoint.X;
+                double dy = pos.Y - dragStartPoint.Y;
+
+                Canvas.SetLeft(selectedRect, Canvas.GetLeft(selectedRect) + dx);
+                Canvas.SetTop(selectedRect, Canvas.GetTop(selectedRect) + dy);
+
+                dragStartPoint = pos; // 更新拖曳起點
+            }
+        }
+
+        private void Box_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (isDrawing)
+            {
+                isDrawing = false;
+                currentRect = null; // 框選完成，準備下一次
+            }
+            else if (isDragging)
+            {
+                isDragging = false;
+            }
+        }
+
+        // 點擊矩形 → 選取
+        private void TargetBox_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Rectangle rect)
+            {
+                // 清除舊的選取
+                if (selectedRect != null)
+                    selectedRect.Stroke = Brushes.Red;
+
+                // 設定新的選取
+                selectedRect = rect;
+                selectedRect.Stroke = Brushes.Lime; // 綠色表示被選取
+
+                // 準備拖曳
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    isDragging = true;
+                    dragStartPoint = e.GetPosition(Box_Canvas);
+                }
+
+                e.Handled = true; // 防止冒泡到 Image
+            }
+        }
+
+        // Delete 鍵刪除
+        private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete && selectedRect != null)
+            {
+                Box_Canvas.Children.Remove(selectedRect);
+                selectedRect = null;
+            }
+        }
+        #endregion
         #endregion
 
         #region Parameter and Init
@@ -223,11 +326,18 @@ namespace CamInspector
             SystemTime();
             LoadConfig(0, 0);
             Version();
+            this.KeyDown += MainWindow_KeyDown; // 監聽鍵盤事件
         }
         BaseConfig<RootObject> Config = new BaseConfig<RootObject>();
         BaseLogRecord Logger = new BaseLogRecord();
         CamHandler cam = new CamHandler();
         LightHandler light = new LightHandler();
+        private Point startPoint;
+        private Rectangle currentRect;
+        private bool isDrawing = false;
+        private Rectangle selectedRect = null;
+        private bool isDragging = false;
+        private Point dragStartPoint;
         #endregion
 
         #region Menu Block
