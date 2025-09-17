@@ -1,5 +1,6 @@
 ﻿using CamInspector.Subpage;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -53,6 +54,36 @@ namespace CamInspector
     }
     #endregion
 
+    #region ParameterConfig Class
+    public class ParameterSerialNumber
+    {
+        [JsonProperty("Devicename_val")]
+        public string Devicename_val { get; set; }
+        [JsonProperty("Username_val")]
+        public string Username_val { get; set; }
+        [JsonProperty("Password_val")]
+        public string Password_val { get; set; }
+        [JsonProperty("IP_val")]
+        public string IP_val { get; set; }
+        [JsonProperty("Port_val")]
+        public int Port_val { get; set; }
+        [JsonProperty("Path_val")]
+        public string Path_val { get; set; }
+    }
+
+    public class ParameterModel
+    {
+        [JsonProperty("SerialNumbers")]
+        public ParameterSerialNumber SerialNumbers { get; set; }
+    }
+
+    public class ParameterRootObject
+    {
+        [JsonProperty("Models")]
+        public List<ParameterModel> Models { get; set; }
+    }
+    #endregion
+
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -98,9 +129,124 @@ namespace CamInspector
             }
         }
 
-        private void SaveConfig(int model, int serialnumber, bool encryption = false)
+        private void SaveConfig(int model, int serialnumber, bool backup = true, bool encryption = false)
+            => Config.Save(model, serialnumber, SerialNumberClass(), backup, encryption);
+        #endregion
+
+        #region ParameterConfig
+        private void ParameterLoadConfig(int model, int serialnumber, bool encryption = false)
         {
-            Config.Save(model, serialnumber, SerialNumberClass(), encryption);
+            List<ParameterRootObject> Parameter_info = ParameterConfig.Load(encryption);
+            if (Parameter_info != null)
+            {
+                cam.ipCamList.Add(new IPCam
+                {
+                    IsSelected = false,
+                    Devicename = Parameter_info[model].Models[serialnumber].SerialNumbers.Devicename_val,
+                    Username = Parameter_info[model].Models[serialnumber].SerialNumbers.Username_val,
+                    Password = Parameter_info[model].Models[serialnumber].SerialNumbers.Password_val,
+                    IP = Parameter_info[model].Models[serialnumber].SerialNumbers.IP_val,
+                    Port = Parameter_info[model].Models[serialnumber].SerialNumbers.Port_val,
+                    Path = Parameter_info[model].Models[serialnumber].SerialNumbers.Path_val
+                });
+            }
+        }
+
+        private int CountString(JToken token, string targetName)
+        {
+            int count = 0;
+            if (token.Type == JTokenType.Object)
+            {
+                foreach (var property in token.Children<JProperty>())
+                {
+                    if (property.Name.Equals(targetName, StringComparison.OrdinalIgnoreCase))
+                        count++;
+                    count += CountString(property.Value, targetName);
+                }
+            }
+            else if (token.Type == JTokenType.Array)
+            {
+                foreach (var item in token.Children())
+                {
+                    count += CountString(item, targetName);
+                }
+            }
+            return count;
+        }
+
+        private void MainParameterLoadConfig()
+        {
+            string jsonPath = ParameterConfig.configPath;
+            if (File.Exists(jsonPath))
+            {
+                string jsonContent = File.ReadAllText(jsonPath);
+                JToken json = JToken.Parse(jsonContent);
+                int num = CountString(json, "SerialNumbers") / CountString(json, "Models");
+                for (int i = 0; i < num; i++)
+                {
+                    ParameterLoadConfig(0, i);
+                }
+            }
+            else
+            {
+                // 結構:2個Models、Models下在各2個SerialNumbers
+                ParameterSerialNumber serialnumber_ = new ParameterSerialNumber();
+                List<ParameterModel> models = new List<ParameterModel>
+                {
+                    new ParameterModel { SerialNumbers = serialnumber_ },
+                    new ParameterModel { SerialNumbers = serialnumber_ }
+                };
+                List<ParameterRootObject> rootObjects = new List<ParameterRootObject>
+                {
+                    new ParameterRootObject { Models = models },
+                    new ParameterRootObject { Models = models }
+                };
+                ParameterConfig.SaveInit(rootObjects);
+            }
+        }
+
+        private ParameterSerialNumber ParameterSerialNumberClass()
+        {
+            ParameterSerialNumber serialnumber_ = new ParameterSerialNumber
+            {
+                Devicename_val = cam.ReadRow(parameterIndex).DeviceName,
+                Username_val = cam.ReadRow(parameterIndex).Username,
+                Password_val = cam.ReadRow(parameterIndex).Password,
+                IP_val = cam.ReadRow(parameterIndex).IP,
+                Port_val = cam.ReadRow(parameterIndex).Port,
+                Path_val = cam.ReadRow(parameterIndex).Path
+            };
+            return serialnumber_;
+        }
+
+        private void ParameterSaveConfig(int model, int serialnumber, bool backup = true, bool encryption = false)
+            => ParameterConfig.Save(model, serialnumber, ParameterSerialNumberClass(), backup, encryption);
+
+        private void MainParameterSaveConfig()
+        {
+            ParameterConfig.ConfigBackup();
+            int datagridRowCount = Parameter.Items.Count - 1;
+            int rootCount = 2;   // 需要幾個 RootObject
+            //int modelCount = 3;  // 每個 RootObject 裡需要幾個 Model
+            List<ParameterRootObject> rootObjects = new List<ParameterRootObject>();
+            for (int i = 0; i < rootCount; i++)
+            {
+                List<ParameterModel> models = new List<ParameterModel>();
+
+                for (int j = 0; j < datagridRowCount; j++)
+                {
+                    ParameterSerialNumber serialnumber_ = new ParameterSerialNumber();
+                    models.Add(new ParameterModel { SerialNumbers = serialnumber_ });
+                }
+
+                rootObjects.Add(new ParameterRootObject { Models = models });
+            }
+            ParameterConfig.SaveInit(rootObjects);
+            for (int i = 0; i < datagridRowCount; i++)
+            {
+                parameterIndex = i;
+                ParameterSaveConfig(0, parameterIndex, backup:false);
+            }
         }
         #endregion
 
@@ -325,11 +471,15 @@ namespace CamInspector
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SystemTime();
+            cam.dataGrid = Parameter;
+            cam.IPCamInit();
+            MainParameterLoadConfig();
             LoadConfig(0, 0);
             Version();
             this.KeyDown += MainWindow_KeyDown; // 監聽鍵盤事件
         }
-        BaseConfig<RootObject> Config = new BaseConfig<RootObject>();
+        BaseConfig<RootObject> Config = new BaseConfig<RootObject>(@"Config/Config.json");
+        BaseConfig<ParameterRootObject> ParameterConfig = new BaseConfig<ParameterRootObject>(@"Config/ParameterConfig.json");
         BaseLogRecord Logger = new BaseLogRecord();
         CamHandler cam = new CamHandler();
         LightHandler light = new LightHandler();
@@ -339,6 +489,7 @@ namespace CamInspector
         private Rectangle selectedRect = null;
         private bool isDragging = false;
         private Point dragStartPoint;
+        private int parameterIndex = 0;
         #endregion
 
         #region Menu Block
@@ -402,10 +553,9 @@ namespace CamInspector
             {
                 case nameof(Demo):
                     {
-                        cam.dataGrid = Parameter;
-                        cam.IPCamInit();
                         //light.TwoLights(LightPanel, "CCTV1", LightColor.Off);
                         //light.TwoLights(LightPanel, "CCTV2", LightColor.Off);
+                        MainParameterSaveConfig();
                         break;
                     }
                 case nameof(Demo1):

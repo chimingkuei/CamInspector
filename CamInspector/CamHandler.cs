@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace CamInspector
         public bool IsSelected { get; set; }
 
         [DisplayName("Device名稱")]
-        public string Name { get; set; }
+        public string Devicename { get; set; }
 
         [DisplayName("使用者名稱")]
         public string Username { get; set; }
@@ -41,7 +42,7 @@ namespace CamInspector
     class CamHandler
     {
         public DataGrid dataGrid = new DataGrid();
-        private ObservableCollection<IPCam> ipCamList = new ObservableCollection<IPCam>();
+        public ObservableCollection<IPCam> ipCamList = new ObservableCollection<IPCam>();
 
         private void SetHeaderStyle()
         {
@@ -103,7 +104,7 @@ namespace CamInspector
                         {
                             Header = headerText,
                             Binding = new System.Windows.Data.Binding(prop.Name),
-                            Width = 200,
+                            Width = new DataGridLength(1, DataGridLengthUnitType.Star),
                             ElementStyle = SetCheckBoxCellStyle()
                         });
                         break;
@@ -113,7 +114,7 @@ namespace CamInspector
                         {
                             Header = headerText,
                             Binding = new System.Windows.Data.Binding(prop.Name),
-                            Width = 200,
+                            Width = new DataGridLength(1, DataGridLengthUnitType.Star),
                             ElementStyle = SetTextCellStyle().textCenterStyle,
                             EditingElementStyle = SetTextCellStyle().textEditStyle
                         });
@@ -135,15 +136,23 @@ namespace CamInspector
             //});
         }
 
-        public void ReadDataGrid()
+        public (string DeviceName, string Username, string Password, string IP, int Port, string Path) ReadRow(int rowIndex)
         {
-            foreach (var item in dataGrid.Items)
+            if (rowIndex >= 0 && rowIndex < dataGrid.Items.Count)
             {
-                if (item is IPCam cam)
+                if (dataGrid.Items[rowIndex] is IPCam cam)
                 {
-                    Console.WriteLine($"名稱: {cam.Name}, IP: {cam.IP}");
+                    return (
+                        cam.Devicename ?? string.Empty,
+                        cam.Username ?? string.Empty,
+                        cam.Password ?? string.Empty,
+                        cam.IP ?? string.Empty,
+                        cam.Port, // 假設 Port 是 int，不用處理 null
+                        cam.Path ?? string.Empty
+                    );
                 }
             }
+            return (string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty);
         }
 
 

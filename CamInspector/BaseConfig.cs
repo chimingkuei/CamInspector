@@ -17,7 +17,7 @@ namespace CamInspector
     public class BaseConfig<T>
     {
         private string key = "deepwise003chimingkueiasherasher";// 32 bytes key for AES-256
-        public string config_path { get; set; }
+        public string configPath { get; set; }
 
         public BaseConfig() : this(@"Config.json")
         {
@@ -25,38 +25,39 @@ namespace CamInspector
 
         public BaseConfig(string _Path)
         {
-            config_path = _Path;
+            configPath = _Path;
         }
 
         ~BaseConfig()
         {
         }
 
-        private void ConfigBackup()
+        public void ConfigBackup()
         {
-            string keyword = System.IO.Path.GetFileNameWithoutExtension(config_path) + "_Backup" + "*";
+            string keyword = System.IO.Path.GetFileNameWithoutExtension(configPath) + "_Backup" + "*";
             // 判斷Config檔目錄是否根目錄
             string rootDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string absolutePath = System.IO.Path.GetFullPath(config_path);
-            string[] files = absolutePath.StartsWith(rootDirectory, StringComparison.OrdinalIgnoreCase) ? Directory.GetFiles(rootDirectory, keyword) : Directory.GetFiles(Path.GetDirectoryName(config_path), keyword);
+            string absolutePath = System.IO.Path.GetFullPath(configPath);
+            string[] files = absolutePath.StartsWith(rootDirectory, StringComparison.OrdinalIgnoreCase) ? Directory.GetFiles(rootDirectory, keyword) : Directory.GetFiles(Path.GetDirectoryName(configPath), keyword);
             foreach (string filePath in files)
             {
                 File.Delete(filePath);
             }
-            File.Copy(config_path, config_path.Split('.')[0] + "_Backup" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".json");
+            File.Copy(configPath, configPath.Split('.')[0] + "_Backup" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".json");
         }
 
         public void SaveInit(List<T> record, bool encryption = false)
         {
             string jsonData = JsonConvert.SerializeObject(record, Formatting.Indented);
             string dataToWrite = encryption ? AESEncrypt(jsonData) : jsonData;
-            File.WriteAllText(config_path, dataToWrite);
+            File.WriteAllText(configPath, dataToWrite);
         }
 
-        public void Save(int model, int serialnumber, Object serialnumber_, bool encryption = false)
+        public void Save(int model, int serialnumber, Object serialnumber_, bool backup = true, bool encryption = false)
         {
-            ConfigBackup();
-            string jsonString_tmp = File.ReadAllText(config_path);
+            if (backup)
+                ConfigBackup();
+            string jsonString_tmp = File.ReadAllText(configPath);
             string jsonString = encryption ? AESDecrypt(jsonString_tmp) : jsonString_tmp;
             JArray jsonArray = JArray.Parse(jsonString);
             JObject firstModel = (JObject)jsonArray[model]["Models"][serialnumber];
@@ -68,15 +69,15 @@ namespace CamInspector
             }
             // 將修改後的 JSON 數據保存回文件
             string modifiedJsonString = encryption ? AESEncrypt(jsonArray.ToString()) : jsonArray.ToString();
-            File.WriteAllText(config_path, modifiedJsonString);
+            File.WriteAllText(configPath, modifiedJsonString);
         }
 
         public List<T> Load(bool encryption = false)
         {
             List<T> jsonData = null;
-            if (File.Exists(config_path))
+            if (File.Exists(configPath))
             {
-                string Record = File.ReadAllText(config_path);
+                string Record = File.ReadAllText(configPath);
                 jsonData = JsonConvert.DeserializeObject<List<T>>(encryption ? AESDecrypt(Record) : Record);
             }
             return jsonData;

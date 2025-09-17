@@ -1,0 +1,50 @@
+[
+  {
+    "Models": [
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      },
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      }
+    ]
+  },
+  {
+    "Models": [
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      },
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      }
+    ]
+  }
+]
