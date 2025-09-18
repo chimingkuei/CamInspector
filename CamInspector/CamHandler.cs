@@ -1,49 +1,49 @@
-﻿using System;
+﻿using OpenCvSharp;
+using OpenCvSharp.WpfExtensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace CamInspector
 {
     public class IPCam
     {
         [DisplayName("選取")]
-        public bool IsSelected { get; set; }
+        public bool isSelected { get; set; }
 
         [DisplayName("Device名稱")]
-        public string Devicename { get; set; }
+        public string devicename { get; set; }
 
         [DisplayName("使用者名稱")]
-        public string Username { get; set; }
+        public string username { get; set; }
 
         [DisplayName("密碼")]
-        public string Password { get; set; }
+        public string password { get; set; }
 
         [DisplayName("IP")]
-        public string IP { get; set; }
+        public string ip { get; set; }
 
         [DisplayName("Port")]
-        public int Port { get; set; }
+        public int port { get; set; }
 
         [DisplayName("路徑")]
-        public string Path { get; set; }
+        public string path { get; set; }
     }
 
     class CamHandler
     {
         public DataGrid dataGrid = new DataGrid();
         public ObservableCollection<IPCam> ipCamList = new ObservableCollection<IPCam>();
-
+        
         private void SetHeaderStyle()
         {
             // DataGrid Header 置中
@@ -123,39 +123,78 @@ namespace CamInspector
             }
             // 指定 DataGrid 資料來源
             dataGrid.ItemsSource = ipCamList;
-            // 測試增加一筆資料
-            //ipCamList.Add(new IPCam
-            //{
-            //    IsSelected = false,
-            //    Name = "Camera1",
-            //    Username = "admin",
-            //    Password = "1234",
-            //    IP = "192.168.1.100",
-            //    Port = 8080,
-            //    Path = "/video"
-            //});
         }
 
         public (string DeviceName, string Username, string Password, string IP, int Port, string Path) ReadRow(int rowIndex)
         {
-            if (rowIndex >= 0 && rowIndex < dataGrid.Items.Count)
+            if (rowIndex >= 0 && rowIndex < ipCamList.Count)
             {
-                if (dataGrid.Items[rowIndex] is IPCam cam)
-                {
-                    return (
-                        cam.Devicename ?? string.Empty,
-                        cam.Username ?? string.Empty,
-                        cam.Password ?? string.Empty,
-                        cam.IP ?? string.Empty,
-                        cam.Port, // 假設 Port 是 int，不用處理 null
-                        cam.Path ?? string.Empty
-                    );
-                }
+                var cam = ipCamList[rowIndex];
+                return (
+                    cam.devicename ?? string.Empty,
+                    cam.username ?? string.Empty,
+                    cam.password ?? string.Empty,
+                    cam.ip ?? string.Empty,
+                    cam.port,
+                    cam.path ?? string.Empty
+                );
             }
             return (string.Empty, string.Empty, string.Empty, string.Empty, 0, string.Empty);
         }
 
+        public List<string> GetRtspUrls()
+        {
+            if (ipCamList == null || ipCamList.Count == 0)
+                return new List<string>();
+            var rtspUrls = new List<string>();
+            foreach (var p in ipCamList)
+            {
+                // 避免 null，組 RTSP URL
+                string username = p.username ?? string.Empty;
+                string password = p.password ?? string.Empty;
+                string ip = p.ip ?? string.Empty;
+                int port = p.port;
+                string path = p.path ?? string.Empty;
+                string url = $"rtsp://{username}:{password}@{ip}:{port}{path}";
+                rtspUrls.Add(url);
+                Debug.WriteLine($"Device: {p.devicename}, URL: {url}");
+            }
+            return rtspUrls;
+        }
 
+        public void ProcessCamera(string rtspUrl, Image imageControl)
+        {
+            using (var capture = new VideoCapture(rtspUrl))
+            using (var frame = new Mat())
+            {
+                if (!capture.IsOpened())
+                {
+                    MessageBox.Show($"無法開啟 RTSP: {rtspUrl}");
+                    return;
+                }
 
+                while (true)
+                {
+                    if (!capture.Read(frame) || frame.Empty())
+                    {
+                        Thread.Sleep(10);
+                        continue;
+                    }
+
+                    // 可以在這裡加影像處理
+
+                    if (imageControl != null)
+                    {
+                        BitmapSource bitmap = frame.ToBitmapSource();
+                        bitmap.Freeze(); // WPF 必須 Freeze 才能跨線程更新
+
+                        imageControl.Dispatcher.Invoke(() =>
+                        {
+                            imageControl.Source = bitmap;
+                        });
+                    }
+                }
+            }
+        }
     }
 }

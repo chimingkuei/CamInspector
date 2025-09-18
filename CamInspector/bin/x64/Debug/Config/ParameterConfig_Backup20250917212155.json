@@ -1,0 +1,70 @@
+[
+  {
+    "Models": [
+      {
+        "SerialNumbers": {
+          "Devicename_val": "TapoC200",
+          "Username_val": "admin0930",
+          "Password_val": "Asher19910930",
+          "IP_val": "192.168.0.130",
+          "Port_val": "554",
+          "Path_val": "/stream1"
+        }
+      },
+      {
+        "SerialNumbers": {
+          "Devicename_val": "TapoC200",
+          "Username_val": "admin0930",
+          "Password_val": "Asher19910930",
+          "IP_val": "192.168.0.130",
+          "Port_val": "554",
+          "Path_val": "/stream2"
+        }
+      },
+      {
+        "SerialNumbers": {
+          "Devicename_val": "TapoC200",
+          "Username_val": "admin0930",
+          "Password_val": "Asher19910930",
+          "IP_val": "192.168.0.130",
+          "Port_val": "554",
+          "Path_val": "/stream2"
+        }
+      }
+    ]
+  },
+  {
+    "Models": [
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      },
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      },
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      }
+    ]
+  }
+]

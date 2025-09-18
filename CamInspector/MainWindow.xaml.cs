@@ -3,10 +3,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -24,6 +26,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using static CamInspector.BaseLogRecord;
+using static OpenCvSharp.XImgProc.CvXImgProc;
 
 namespace CamInspector
 {
@@ -103,9 +106,9 @@ namespace CamInspector
             return serialnumber_;
         }
 
-        private void LoadConfig(int model, int serialnumber, bool encryption = false)
+        private void LoadConfig(int model, int serialnumber, bool isEncryption = false)
         {
-            List<RootObject> Parameter_info = Config.Load(encryption);
+            List<RootObject> Parameter_info = Config.Load(isEncryption);
             if (Parameter_info != null)
             {
                 Parameter1.Text = Parameter_info[model].Models[serialnumber].SerialNumbers.Parameter1_val;
@@ -125,29 +128,29 @@ namespace CamInspector
                     new RootObject { Models = models },
                     new RootObject { Models = models }
                 };
-                Config.SaveInit(rootObjects, encryption);
+                Config.SaveInit(rootObjects, isEncryption);
             }
         }
 
-        private void SaveConfig(int model, int serialnumber, bool backup = true, bool encryption = false)
-            => Config.Save(model, serialnumber, SerialNumberClass(), backup, encryption);
+        private void SaveConfig(int model, int serialnumber, bool isBackup = true, bool isEncryption = false)
+            => Config.Save(model, serialnumber, SerialNumberClass(), isBackup, isEncryption);
         #endregion
 
         #region ParameterConfig
-        private void ParameterLoadConfig(int model, int serialnumber, bool encryption = false)
+        private void ParameterLoadConfig(int model, int serialnumber, bool isEncryption = false)
         {
-            List<ParameterRootObject> Parameter_info = ParameterConfig.Load(encryption);
+            List<ParameterRootObject> Parameter_info = ParameterConfig.Load(isEncryption);
             if (Parameter_info != null)
             {
                 cam.ipCamList.Add(new IPCam
                 {
-                    IsSelected = false,
-                    Devicename = Parameter_info[model].Models[serialnumber].SerialNumbers.Devicename_val,
-                    Username = Parameter_info[model].Models[serialnumber].SerialNumbers.Username_val,
-                    Password = Parameter_info[model].Models[serialnumber].SerialNumbers.Password_val,
-                    IP = Parameter_info[model].Models[serialnumber].SerialNumbers.IP_val,
-                    Port = Parameter_info[model].Models[serialnumber].SerialNumbers.Port_val,
-                    Path = Parameter_info[model].Models[serialnumber].SerialNumbers.Path_val
+                    isSelected = false,
+                    devicename = Parameter_info[model].Models[serialnumber].SerialNumbers.Devicename_val,
+                    username = Parameter_info[model].Models[serialnumber].SerialNumbers.Username_val,
+                    password = Parameter_info[model].Models[serialnumber].SerialNumbers.Password_val,
+                    ip = Parameter_info[model].Models[serialnumber].SerialNumbers.IP_val,
+                    port = Parameter_info[model].Models[serialnumber].SerialNumbers.Port_val,
+                    path = Parameter_info[model].Models[serialnumber].SerialNumbers.Path_val
                 });
             }
         }
@@ -219,8 +222,8 @@ namespace CamInspector
             return serialnumber_;
         }
 
-        private void ParameterSaveConfig(int model, int serialnumber, bool backup = true, bool encryption = false)
-            => ParameterConfig.Save(model, serialnumber, ParameterSerialNumberClass(), backup, encryption);
+        private void ParameterSaveConfig(int model, int serialnumber, bool isBackup = true, bool isEncryption = false)
+            => ParameterConfig.Save(model, serialnumber, ParameterSerialNumberClass(), isBackup, isEncryption);
 
         private void MainParameterSaveConfig()
         {
@@ -245,7 +248,7 @@ namespace CamInspector
             for (int i = 0; i < datagridRowCount; i++)
             {
                 parameterIndex = i;
-                ParameterSaveConfig(0, parameterIndex, backup:false);
+                ParameterSaveConfig(0, parameterIndex, isBackup: false);
             }
         }
         #endregion
@@ -555,7 +558,27 @@ namespace CamInspector
                     {
                         //light.TwoLights(LightPanel, "CCTV1", LightColor.Off);
                         //light.TwoLights(LightPanel, "CCTV2", LightColor.Off);
-                        MainParameterSaveConfig();
+                        // 取得所有 RTSP URL
+                        List<string> rtspUrls = cam.GetRtspUrls();
+
+                        int showIndex = 0; // 指定要顯示的相機序號，例如第一支
+
+                        for (int i = 0; i < rtspUrls.Count; i++)
+                        {
+                            string url = rtspUrls[i];
+
+                            if (i == showIndex)
+                            {
+                                // 主線程或背景任務，顯示到 WPF Image
+                                Task.Run(() => cam.ProcessCamera(url, Display_Screen));
+                            }
+                            else
+                            {
+                                // 背景執行，不顯示
+                                Task.Run(() => cam.ProcessCamera(url, null));
+                            }
+                        }
+
                         break;
                     }
                 case nameof(Demo1):
@@ -568,6 +591,7 @@ namespace CamInspector
                         //var frame2 = LightPanel.Children[1] as Border;
                         //light.SetLight(frame2, LightColor.Red);
                         //cam.ReadDataGrid();
+                        MainParameterSaveConfig();
                         break;
                     }
             }

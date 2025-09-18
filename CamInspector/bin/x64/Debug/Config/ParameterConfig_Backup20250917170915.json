@@ -1,0 +1,50 @@
+[
+  {
+    "Models": [
+      {
+        "SerialNumbers": {
+          "Devicename_val": "TapoC200",
+          "Username_val": "",
+          "Password_val": "",
+          "IP_val": "",
+          "Port_val": "0",
+          "Path_val": ""
+        }
+      },
+      {
+        "SerialNumbers": {
+          "Devicename_val": "",
+          "Username_val": "",
+          "Password_val": "",
+          "IP_val": "",
+          "Port_val": "0",
+          "Path_val": ""
+        }
+      }
+    ]
+  },
+  {
+    "Models": [
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      },
+      {
+        "SerialNumbers": {
+          "Devicename_val": null,
+          "Username_val": null,
+          "Password_val": null,
+          "IP_val": null,
+          "Port_val": 0,
+          "Path_val": null
+        }
+      }
+    ]
+  }
+]

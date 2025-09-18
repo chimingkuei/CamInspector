@@ -1,7 +1,5 @@
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\dll\x86\OpenCvSharpExtern.dll
-D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\dll\x86\opencv_videoio_ffmpeg455.dll
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\dll\x64\OpenCvSharpExtern.dll
-D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\dll\x64\opencv_videoio_ffmpeg455_64.dll
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\CamInspector.exe.config
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\CamInspector.exe
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\CamInspector.pdb
@@ -83,3 +81,8 @@ D:\Chimingkuei\repos\Project\CamInspector\CamInspector\obj\x64\Debug\CamInspecto
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\obj\x64\Debug\CamInspe.DFFF1843.Up2Date
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\obj\x64\Debug\CamInspector.exe
 D:\Chimingkuei\repos\Project\CamInspector\CamInspector\obj\x64\Debug\CamInspector.pdb
+D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\dll\x86\opencv_videoio_ffmpeg490.dll
+D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\dll\x64\opencv_videoio_ffmpeg490_64.dll
+D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\System.Drawing.Common.xml
+D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\OpenCvSharp.WpfExtensions.dll
+D:\Chimingkuei\repos\Project\CamInspector\CamInspector\bin\x64\Debug\OpenCvSharp.WpfExtensions.xml

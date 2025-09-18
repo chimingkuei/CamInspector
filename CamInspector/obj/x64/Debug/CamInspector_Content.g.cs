@@ -9,8 +9,8 @@
 //------------------------------------------------------------------------------
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("opencvsharpextern.dll")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("opencv_videoio_ffmpeg460.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("opencv_videoio_ffmpeg490.dll")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("opencvsharpextern.dll")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("opencv_videoio_ffmpeg460_64.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("opencv_videoio_ffmpeg490_64.dll")]
 
 

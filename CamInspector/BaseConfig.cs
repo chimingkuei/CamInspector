@@ -35,7 +35,6 @@ namespace CamInspector
         public void ConfigBackup()
         {
             string keyword = System.IO.Path.GetFileNameWithoutExtension(configPath) + "_Backup" + "*";
-            // 判斷Config檔目錄是否根目錄
             string rootDirectory = AppDomain.CurrentDomain.BaseDirectory;
             string absolutePath = System.IO.Path.GetFullPath(configPath);
             string[] files = absolutePath.StartsWith(rootDirectory, StringComparison.OrdinalIgnoreCase) ? Directory.GetFiles(rootDirectory, keyword) : Directory.GetFiles(Path.GetDirectoryName(configPath), keyword);
@@ -46,19 +45,19 @@ namespace CamInspector
             File.Copy(configPath, configPath.Split('.')[0] + "_Backup" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".json");
         }
 
-        public void SaveInit(List<T> record, bool encryption = false)
+        public void SaveInit(List<T> record, bool isEncryption = false)
         {
             string jsonData = JsonConvert.SerializeObject(record, Formatting.Indented);
-            string dataToWrite = encryption ? AESEncrypt(jsonData) : jsonData;
+            string dataToWrite = isEncryption ? AESEncrypt(jsonData) : jsonData;
             File.WriteAllText(configPath, dataToWrite);
         }
 
-        public void Save(int model, int serialnumber, Object serialnumber_, bool backup = true, bool encryption = false)
+        public void Save(int model, int serialnumber, Object serialnumber_, bool isBackup = true, bool isEncryption = false)
         {
-            if (backup)
+            if (isBackup)
                 ConfigBackup();
             string jsonString_tmp = File.ReadAllText(configPath);
-            string jsonString = encryption ? AESDecrypt(jsonString_tmp) : jsonString_tmp;
+            string jsonString = isEncryption ? AESDecrypt(jsonString_tmp) : jsonString_tmp;
             JArray jsonArray = JArray.Parse(jsonString);
             JObject firstModel = (JObject)jsonArray[model]["Models"][serialnumber];
             JObject firstSequences = (JObject)firstModel["SerialNumbers"];
@@ -68,17 +67,17 @@ namespace CamInspector
                 firstSequences[property.Name] = property.GetValue(serialnumber_).ToString();
             }
             // 將修改後的 JSON 數據保存回文件
-            string modifiedJsonString = encryption ? AESEncrypt(jsonArray.ToString()) : jsonArray.ToString();
+            string modifiedJsonString = isEncryption ? AESEncrypt(jsonArray.ToString()) : jsonArray.ToString();
             File.WriteAllText(configPath, modifiedJsonString);
         }
 
-        public List<T> Load(bool encryption = false)
+        public List<T> Load(bool isEncryption = false)
         {
             List<T> jsonData = null;
             if (File.Exists(configPath))
             {
                 string Record = File.ReadAllText(configPath);
-                jsonData = JsonConvert.DeserializeObject<List<T>>(encryption ? AESDecrypt(Record) : Record);
+                jsonData = JsonConvert.DeserializeObject<List<T>>(isEncryption ? AESDecrypt(Record) : Record);
             }
             return jsonData;
         }
